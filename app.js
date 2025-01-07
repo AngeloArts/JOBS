@@ -7,7 +7,8 @@ const express = require('express')
 const app = express()
 //middleware
 const notFound = require('./middleware/notFound')
-
+const errorHandlerMiddleware = require('./middleware/errorHandler')
+const authMiddleware = require('./middleware/authMiddleware')
 //routers
 const authRouter = require('./routes/authRouter')
 const jobsRouter = require('./routes/jobsRouter')
@@ -20,10 +21,11 @@ app.get('/', (req, res)=>{
 })
 
 app.use('/auth', authRouter)
-app.use('/jobs', jobsRouter)
+app.use('/jobs', authMiddleware, jobsRouter)
 
 
 app.use(notFound)
+app.use(errorHandlerMiddleware)
 
 //connect to DB then start server
 const port = process.env.PORT || 3000;
